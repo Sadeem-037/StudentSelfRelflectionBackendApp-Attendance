@@ -150,6 +150,11 @@ public class AttendanceService
     //  Get Overall Attendance in Percentage
 
     public double getOverallAttendancePercentage(Long studentId) {
+
+        // TimeStamp Before The Actual Operation  (@Before)
+        Instant startTime = Instant.now();
+        System.out.println("saveAttendance() method started at : " + startTime);
+
         List<Attendance> records = attendanceRepository.findByStudentUser_StudentId(studentId);
 
         if (records.isEmpty()) {
@@ -159,6 +164,11 @@ public class AttendanceService
         long presentCount = records.stream()
                 .filter(att -> att.getStatus() == AttendanceStatus.PRESENT)
                 .count();
+
+        // TimeStamp After The Actual Operation (@After)
+        Instant endTime = Instant.now(); // 35 ms
+        System.out.println("saveAttendance() method finished at : " + endTime);
+        System.out.println("saveAttendance() method time elapsed : " + Duration.between(startTime, endTime));
 
         return (presentCount * 100.0) / records.size();
     }
